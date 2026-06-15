@@ -71,14 +71,15 @@ cb=plt.colorbar(im,ax=ax,fraction=0.046,pad=0.03); cb.set_label("Spearman ρ",fo
 ax.set_title("Score concordance: strategies agree, scales differ")
 letter(ax,"c")
 
-# D. BRCA1 variant landscape
+# D. gene case-study variant landscape (FTO — common, mostly noncoding)
 ax=axs[1,1]
-b=D["brca1"]; bx=np.array([r_["BP"] for r_ in b])/1e6; bd=np.array([r_["d40"] for r_ in b])
+gc=D["gene_case"]; b=gc["rows"]; gname=gc["gene"]; chrom=b[0]["CHR"]
+bx=np.array([r_["BP"] for r_ in b])/1e6; bd=np.array([r_["d40"] for r_ in b])
 vlim=max(abs(np.percentile(bd,2)),abs(np.percentile(bd,98)),1); norm=TwoSlopeNorm(vcenter=0,vmin=-vlim,vmax=vlim)
-sc=ax.scatter(bx,bd,c=bd,cmap=EVO,norm=norm,s=28,edgecolors="#334155",linewidths=0.3)
+sc=ax.scatter(bx,bd,c=bd,cmap=EVO,norm=norm,s=22,edgecolors="#334155",linewidths=0.25)
 ax.axhline(0,color=MUTED,lw=0.8,ls="--")
-ax.set_xlabel("BRCA1 locus position (chr17, Mb)"); ax.set_ylabel("Evo2-40B Δ score")
-ax.set_title(f"Variant landscape across BRCA1 (n={len(b)})")
+ax.set_xlabel(f"{gname} locus position (chr{chrom}, Mb)"); ax.set_ylabel("Evo2-40B Δ score")
+ax.set_title(f"Variant landscape across {gname} (n={len(b)}, common variants)")
 cb=plt.colorbar(sc,ax=ax,fraction=0.046,pad=0.03); cb.set_label("Δ  (disfavored ↔ tolerated)",fontsize=8)
 ax.grid(color=GRID,lw=0.6); ax.set_axisbelow(True); letter(ax,"d")
 

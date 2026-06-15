@@ -10,7 +10,7 @@ SCALE=2; os.makedirs(OUT, exist_ok=True)
 PANELS = [
     ("p_landing", "/", [(".evo2-search","Four entry points: rsID · gene · region · free-text"),
                         (".evo2-legend-bar","Diverging Δ scale: red disfavored → green tolerated")]),
-    ("p_gene", "/evo2/gene_top_impact?gene=BRCA1", [("table.rows-and-columns","BRCA1 variants ranked by |Evo2-40B Δ|; 7B & 40B side by side")]),
+    ("p_gene", "/evo2/gene_top_impact?gene=FTO", [("table.rows-and-columns","FTO common variants ranked by |Evo2-40B Δ|; 7B & 40B side by side")]),
     ("p_faceted", "/evo2/variants?_facet=Func_ensGene", [(".facet-results","Facet by functional region, with live counts")]),
     ("p_about", "/about", [(".evo2-doc table","2 models × 3 strand strategies → 18 model-score columns")]),
 ]

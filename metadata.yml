@@ -84,7 +84,7 @@ databases:
     queries:
       lookup_by_rsid:
         title: "Look up a variant by rsID"
-        description: "Exact dbSNP rsID, e.g. rs76735897"
+        description: "Exact dbSNP rsID, e.g. rs9939609"
         sql: |-
           SELECT variant_id, rsid, CHR, BP, Ref, Alt, Alt_Freq, MAF_tier,
                  evo7b_noRC_delta_score, evo40b_noRC_delta_score,
@@ -105,7 +105,7 @@ databases:
           LIMIT 1000
       gene_top_impact:
         title: "Top predicted-impact variants in a gene"
-        description: "Gene symbol, e.g. BRCA1 - ranked by |Evo2-40B delta|"
+        description: "Gene symbol, e.g. FTO - ranked by |Evo2-40B delta|"
         sql: |-
           SELECT variant_id, rsid, CHR, BP, Ref, Alt, Alt_Freq,
                  evo40b_noRC_delta_score, evo7b_noRC_delta_score,

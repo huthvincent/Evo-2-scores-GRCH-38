@@ -33,31 +33,31 @@
     <form class="evo2-card" action="/evo2/lookup_by_rsid" method="get" role="search">
       <span class="evo2-card-title">Look up by rsID</span>
       <label for="f-rsid">dbSNP rsID</label>
-      <input id="f-rsid" type="text" name="rsid" placeholder="rs76735897" autocomplete="off" spellcheck="false">
+      <input id="f-rsid" type="text" name="rsid" placeholder="rs9939609" autocomplete="off" spellcheck="false">
       <p class="evo2-help">Exact dbSNP rsID.</p>
       <button type="submit">Look up</button>
     </form>
     <form class="evo2-card" action="/evo2/gene_top_impact" method="get" role="search">
       <span class="evo2-card-title">Top variants in a gene</span>
       <label for="f-gene">Gene symbol</label>
-      <input id="f-gene" type="text" name="gene" placeholder="BRCA1" autocomplete="off" spellcheck="false">
+      <input id="f-gene" type="text" name="gene" placeholder="FTO" autocomplete="off" spellcheck="false">
       <p class="evo2-help">Ranked by |Evo2-40B delta|.</p>
       <button type="submit">Search gene</button>
     </form>
     <form class="evo2-card" action="/evo2/lookup_by_region" method="get" role="search">
       <span class="evo2-card-title">Browse a genomic region</span>
       <div class="evo2-region">
-        <div><label for="f-chr">Chr</label><input id="f-chr" type="text" name="chr" placeholder="1" inputmode="numeric" autocomplete="off"></div>
-        <div><label for="f-start">Start (bp)</label><input id="f-start" type="text" name="start" placeholder="60000" inputmode="numeric" autocomplete="off"></div>
-        <div><label for="f-end">End (bp)</label><input id="f-end" type="text" name="end" placeholder="70000" inputmode="numeric" autocomplete="off"></div>
+        <div><label for="f-chr">Chr</label><input id="f-chr" type="text" name="chr" placeholder="16" inputmode="numeric" autocomplete="off"></div>
+        <div><label for="f-start">Start</label><input id="f-start" type="text" name="start" placeholder="53700000" inputmode="numeric" autocomplete="off"></div>
+        <div><label for="f-end">End</label><input id="f-end" type="text" name="end" placeholder="53710000" inputmode="numeric" autocomplete="off"></div>
       </div>
-      <p class="evo2-help">GRCh38 coordinates, chr&nbsp;1&ndash;22.</p>
+      <p class="evo2-help">GRCh38 base-pair coordinates, chr&nbsp;1&ndash;22.</p>
       <button type="submit">Browse region</button>
     </form>
     <form class="evo2-card" action="/evo2/variants" method="get" role="search">
       <span class="evo2-card-title">Search everything</span>
       <label for="f-search">Free-text search</label>
-      <input id="f-search" type="search" name="_search" placeholder="APOE, rs429358, p.Cys130Arg" autocomplete="off">
+      <input id="f-search" type="search" name="_search" placeholder="FTO, rs9939609" autocomplete="off">
       <p class="evo2-help">Matches rsID, gene symbol, or amino-acid change.</p>
       <button type="submit">Search</button>
     </form>
@@ -103,9 +103,9 @@
   <section class="evo2-examples" aria-labelledby="evo2-ex-h">
     <h2 id="evo2-ex-h">Try an example</h2>
     <div class="evo2-ex-grid">
-      <a class="evo2-ex" href="/evo2/lookup_by_rsid?rsid=rs76735897"><span class="evo2-ex-title">rs76735897</span><span class="evo2-ex-desc">A single variant, looked up by rsID.</span><code class="evo2-ex-url">/lookup_by_rsid</code></a>
-      <a class="evo2-ex" href="/evo2/gene_top_impact?gene=BRCA1"><span class="evo2-ex-title">BRCA1</span><span class="evo2-ex-desc">Highest-impact variants in a gene.</span><code class="evo2-ex-url">/gene_top_impact</code></a>
-      <a class="evo2-ex" href="/evo2/lookup_by_region?chr=1&amp;start=60000&amp;end=70000"><span class="evo2-ex-title">chr1:60,000&ndash;70,000</span><span class="evo2-ex-desc">Every scored variant in a window.</span><code class="evo2-ex-url">/lookup_by_region</code></a>
+      <a class="evo2-ex" href="/evo2/lookup_by_rsid?rsid=rs9939609"><span class="evo2-ex-title">rs9939609</span><span class="evo2-ex-desc">The FTO obesity-GWAS variant, by rsID.</span><code class="evo2-ex-url">/lookup_by_rsid</code></a>
+      <a class="evo2-ex" href="/evo2/gene_top_impact?gene=FTO"><span class="evo2-ex-title">FTO</span><span class="evo2-ex-desc">Highest-impact common variants in a gene.</span><code class="evo2-ex-url">/gene_top_impact</code></a>
+      <a class="evo2-ex" href="/evo2/lookup_by_region?chr=16&amp;start=53700000&amp;end=53710000"><span class="evo2-ex-title">chr16:53.70&ndash;53.71 Mb</span><span class="evo2-ex-desc">Every scored variant in a window (FTO).</span><code class="evo2-ex-url">/lookup_by_region</code></a>
       <a class="evo2-ex" href="/evo2/high_impact_coding"><span class="evo2-ex-title">High-impact coding</span><span class="evo2-ex-desc">Nonsynonymous / stopgain / startloss / stoploss.</span><code class="evo2-ex-url">/high_impact_coding</code></a>
     </div>
   </section>

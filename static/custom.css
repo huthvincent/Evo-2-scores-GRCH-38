@@ -31,12 +31,16 @@ body.evo2-home header, body.evo2-doc-body header{display:none !important;}
 .evo2-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:12px;padding:1.1rem 1.2rem;display:flex;flex-direction:column;transition:box-shadow .15s ease,border-color .15s ease;}
 .evo2-card:hover,.evo2-card:focus-within{box-shadow:0 1px 3px rgba(15,23,42,.07);border-color:var(--c-border-strong);}
 .evo2-card-title{font-size:.96rem;font-weight:700;color:var(--c-ink);margin-bottom:.6rem;}
-.evo2-card label{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--c-muted);display:block;margin-bottom:.3rem;}
+.evo2-card label{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.03em;color:var(--c-muted);display:block;margin-bottom:.3rem;min-height:2.3em;line-height:1.2;}
 .evo2-card input{width:100%;min-height:42px;font-family:var(--c-mono);font-size:.95rem;color:var(--c-ink);background:#fff;border:1px solid var(--c-border-strong);border-radius:8px;padding:.45rem .6rem;}
 .evo2-card input::placeholder{color:#94A3B8;}
-.evo2-region{display:flex;gap:.4rem;}
-.evo2-region>div:first-child{flex:0 0 22%;}
-.evo2-region>div{flex:1;}
+.evo2-region{display:flex;flex-wrap:wrap;gap:.5rem;}
+.evo2-region>div{min-width:0;}
+.evo2-region label{min-height:0;}
+.evo2-region>div:first-child{flex:0 0 4rem;}
+.evo2-region>div:nth-child(2){flex:1 1 8rem;}
+.evo2-region>div:nth-child(3){flex:1 1 100%;}
+.evo2-region input{padding:.45rem .5rem;}
 .evo2-help{font-size:.82rem;color:var(--c-muted);margin:.45rem 0 .8rem;flex:1 0 auto;}
 .evo2-card button{margin-top:auto;align-self:flex-start;min-height:40px;background:var(--c-accent);color:#fff;border:1px solid var(--c-accent);border-radius:8px;font-size:.9rem;font-weight:600;padding:.5rem 1.1rem;cursor:pointer;transition:background .15s ease;}
 .evo2-card button:hover{background:var(--c-accent-hover);border-color:var(--c-accent-hover);}
