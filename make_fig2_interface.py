@@ -10,10 +10,10 @@ S="/Users/rui/Desktop/papers/NAR/database/figures/screens"
 P=json.load(open(f"{S}/fig2_panels.json"))
 INK="#0F172A"; CALL="#C0392B"
 titles={"p_landing":("a","Landing — search entry points & Δ legend"),
-        "p_gene":("b","Gene result (FTO), ranked by |Evo2-40B Δ|"),
+        "p_viewer":("b","Region viewer — interactive Δ landscape (APOE locus)"),
         "p_faceted":("c","Faceted browse of all 6.48M variants"),
         "p_about":("d","About / feature scheme")}
-order=["p_landing","p_gene","p_faceted","p_about"]
+order=["p_landing","p_viewer","p_faceted","p_about"]
 by={p["name"]:p for p in P}
 
 fig,axs=plt.subplots(2,2,figsize=(13,10.2)); plt.rcParams.update({"font.family":"DejaVu Sans"})

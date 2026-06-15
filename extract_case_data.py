@@ -43,10 +43,10 @@ out["phylop_bins"] = q(
     "GROUP BY bin HAVING n>=200 ORDER BY bin")
 
 # E. gene case-study variant landscape (FTO — common-variant obesity/GWAS locus, mostly noncoding)
-out["gene_case"] = {"gene": "FTO", "rows": q(
+out["gene_case"] = {"gene": "APOE", "rows": q(
     "SELECT CHR, BP, evo7b_noRC_delta_score d7, evo40b_noRC_delta_score d40, "
     "ExonicFunc_ensGene ef, Func_ensGene fc FROM variants "
-    "WHERE Gene_ensGene LIKE '%FTO%' AND evo40b_noRC_delta_score IS NOT NULL ORDER BY BP")}
+    "WHERE CHR='19' AND BP BETWEEN 44880000 AND 44950000 AND evo40b_noRC_delta_score IS NOT NULL ORDER BY BP")}
 
 # F. cCRE category summary
 out["ccre"] = q(
@@ -68,7 +68,7 @@ print("delta_by_func groups:", list(out["delta_by_func"].keys()))
 print("delta_by_exonic groups:", {k: len(v) for k, v in out["delta_by_exonic"].items()})
 print("scatter n:", len(out["scatter_7b_40b"]["x"]))
 print("phylop bins:", len(out["phylop_bins"]))
-print("FTO variants:", len(out["gene_case"]["rows"]))
+print("APOE-locus variants:", len(out["gene_case"]["rows"]))
 print("ccre cats:", [(r["category"], r["n"]) for r in out["ccre"]])
 print("hist n: 7b", len(out["hist"]["d7"]), "40b", len(out["hist"]["d40"]))
 db.close()

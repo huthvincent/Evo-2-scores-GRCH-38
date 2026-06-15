@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Region viewer — Evo2 Variant Effect Database{% endblock %}
+{% block body_class %}evo2-doc-body{% endblock %}
+{% block extra_head %}<script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>{% endblock %}
+
+{% block content %}
+<div class="evo2-wrap">
+  <div class="evo2-masthead">
+    <div class="evo2-brand">
+      <span class="evo2-logo" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 3c0 6 14 12 14 18M19 3c0 6-14 12-14 18"/><path d="M6.5 6h11M6 10h12M6 14h12M6.5 18h11"/></svg></span>
+      <span class="evo2-wordmark">Evo2 Variant Effect Database</span>
+      <nav class="evo2-nav" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/about">About &amp; feature scheme</a>
+        <a href="/evo2">Run SQL</a>
+      </nav>
+    </div>
+    <div class="evo2-tagrow"><p class="evo2-tagline">Region viewer — an interactive Evo2-Δ landscape for any gene or genomic window.</p></div>
+  </div>
+
+  <form class="evo2-viewer-form" method="get" action="/viewer">
+    <div class="vf-field"><label for="v-gene">Gene</label><input id="v-gene" name="gene" placeholder="APOE" autocomplete="off"></div>
+    <span class="evo2-or">or</span>
+    <div class="vf-field vf-chr"><label for="v-chr">Chr</label><input id="v-chr" name="chr" placeholder="19" inputmode="numeric" autocomplete="off"></div>
+    <div class="vf-field"><label for="v-start">Start</label><input id="v-start" name="start" placeholder="44880000" inputmode="numeric" autocomplete="off"></div>
+    <div class="vf-field"><label for="v-end">End</label><input id="v-end" name="end" placeholder="44950000" inputmode="numeric" autocomplete="off"></div>
+    <button type="submit">Plot</button>
+  </form>
+
+  <p id="v-status" class="evo2-help"></p>
+  <div id="landscape" class="evo2-chart" style="height:390px;"></div>
+  <div class="evo2-chart-row">
+    <div id="scatter" class="evo2-chart" style="height:320px;"></div>
+    <div id="hist" class="evo2-chart" style="height:320px;"></div>
+  </div>
+  <p id="v-links" class="evo2-foot-meta"></p>
+  <p class="evo2-help">Δ = log P(ALT) − log P(REF); more negative = predicted more disruptive. Research use only. Region queries return up to 1000 variants.</p>
+
+  {% raw %}
+  <script>
+  const DIV=[[0,'#A32D2D'],[0.25,'#E24B4A'],[0.5,'#C9CCD6'],[0.75,'#97C459'],[1,'#639922']];
+  const qp=new URLSearchParams(location.search);
+  const gene=qp.get('gene'), chr=qp.get('chr'), start=qp.get('start'), end=qp.get('end');
+  const g=id=>document.getElementById(id);
+  if(gene)g('v-gene').value=gene; if(chr)g('v-chr').value=chr; if(start)g('v-start').value=start; if(end)g('v-end').value=end;
+  const status=g('v-status');
+  function L(t,xt,yt){return {title:{text:t,font:{size:14,color:'#0F172A'}},margin:{t:40,r:14,b:46,l:58},
+    font:{family:'ui-sans-serif,system-ui,Arial',color:'#1E293B'},paper_bgcolor:'#fff',plot_bgcolor:'#fff',
+    xaxis:{title:xt,gridcolor:'#E2E8F0',zeroline:false},yaxis:{title:yt,gridcolor:'#E2E8F0',zeroline:false}};}
+  async function run(){
+    let url,label,tableUrl;
+    if(gene){url=`/evo2/gene_top_impact.json?gene=${encodeURIComponent(gene)}&_shape=array`;
+      label=`gene ${gene}`; tableUrl=`/evo2/gene_top_impact?gene=${encodeURIComponent(gene)}`;}
+    else if(chr&&start&&end){url=`/evo2/lookup_by_region.json?chr=${encodeURIComponent(chr)}&start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}&_shape=array`;
+      label=`chr${chr}:${(+start).toLocaleString()}–${(+end).toLocaleString()}`; tableUrl=`/evo2/lookup_by_region?chr=${chr}&start=${start}&end=${end}`;}
+    else {status.textContent='Enter a gene symbol, or chromosome + start + end, then press Plot.'; return;}
+    status.textContent='Loading '+label+' …';
+    let data;
+    try{data=await (await fetch(url)).json();}catch(e){status.textContent='Could not load data.'; return;}
+    if(!data.length){status.textContent='No common variants found for '+label+'.'; return;}
+    const bp=data.map(d=>d.BP/1e6), d40=data.map(d=>d.evo40b_noRC_delta_score), d7=data.map(d=>d.evo7b_noRC_delta_score);
+    const txt=data.map(d=>`${d.rsid||''}<br>${d.Func_ensGene||''} · Δ40B=${(d.evo40b_noRC_delta_score||0).toFixed(1)}`);
+    Plotly.newPlot('landscape',[{x:bp,y:d40,text:txt,hoverinfo:'text',mode:'markers',type:'scattergl',
+      marker:{size:8,color:d40,colorscale:DIV,cmid:0,line:{width:0.4,color:'#334155'},colorbar:{title:'Δ',thickness:10}}}],
+      L(`Variant landscape — ${label} (n=${data.length})`,'position (Mb)','Evo2-40B Δ score'),{responsive:true,displayModeBar:false});
+    Plotly.newPlot('scatter',[{x:d7,y:d40,mode:'markers',type:'scattergl',marker:{size:6,color:'#2563EB',opacity:0.5}}],
+      L('7B vs 40B Δ','Evo2-7B Δ','Evo2-40B Δ'),{responsive:true,displayModeBar:false});
+    Plotly.newPlot('hist',[{x:d40,type:'histogram',marker:{color:'#93B4E8',line:{color:'#2563EB',width:1}}}],
+      L('Δ distribution','Evo2-40B Δ score','variant count'),{responsive:true,displayModeBar:false});
+    status.textContent=`${data.length} common variant(s) in ${label}.`;
+    g('v-links').innerHTML=`See the <a href="${tableUrl}">full results table</a> · <a href="${url}">raw JSON</a>`;
+  }
+  run();
+  </script>
+  {% endraw %}
+</div>
+{% endblock %}

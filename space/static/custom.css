@@ -118,6 +118,19 @@ code,.evo2-mono{font-family:var(--c-mono);font-size:.85rem;background:var(--c-co
 .evo2-doc a:hover{text-decoration:underline;}
 .evo2-back{display:inline-block;margin:0 0 1rem;font-size:.85rem;color:var(--c-accent);text-decoration:none;font-weight:600;}
 
+/* region viewer */
+.evo2-viewer-form{display:flex;flex-wrap:wrap;align-items:flex-end;gap:.7rem;background:var(--c-surface);border:1px solid var(--c-border);border-radius:12px;padding:1rem 1.2rem;margin:0 0 1.2rem;}
+.vf-field{display:flex;flex-direction:column;}
+.vf-field label{font-size:.74rem;font-weight:600;text-transform:uppercase;letter-spacing:.03em;color:var(--c-muted);margin-bottom:.25rem;}
+.vf-field input{min-height:40px;font-family:var(--c-mono);font-size:.92rem;color:var(--c-ink);border:1px solid var(--c-border-strong);border-radius:8px;padding:.4rem .6rem;width:9rem;}
+.vf-chr input{width:4rem;}
+.evo2-or{color:var(--c-muted);font-size:.85rem;padding-bottom:.6rem;}
+.evo2-viewer-form button{min-height:40px;background:var(--c-accent);color:#fff;border:1px solid var(--c-accent);border-radius:8px;font-size:.9rem;font-weight:600;padding:.5rem 1.3rem;cursor:pointer;}
+.evo2-viewer-form button:hover{background:var(--c-accent-hover);}
+.evo2-viewer-form input:focus{outline:2px solid var(--c-accent);outline-offset:1px;border-color:var(--c-accent);}
+.evo2-chart{background:var(--c-surface);border:1px solid var(--c-border);border-radius:12px;padding:.5rem;margin-bottom:1.2rem;}
+.evo2-chart-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.2rem;}
+
 a:focus-visible,button:focus-visible,input:focus-visible,.evo2-ex:focus-visible,.evo2-pills a:focus-visible{outline:2px solid var(--c-accent);outline-offset:2px;}
 .evo2-card input:focus{outline:2px solid var(--c-accent);outline-offset:1px;border-color:var(--c-accent);}
 

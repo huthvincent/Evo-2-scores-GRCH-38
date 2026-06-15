@@ -10,7 +10,7 @@ SCALE=2; os.makedirs(OUT, exist_ok=True)
 PANELS = [
     ("p_landing", "/", [(".evo2-search","Four entry points: rsID · gene · region · free-text"),
                         (".evo2-legend-bar","Diverging Δ scale: red disfavored → green tolerated")]),
-    ("p_gene", "/evo2/gene_top_impact?gene=FTO", [("table.rows-and-columns","FTO common variants ranked by |Evo2-40B Δ|; 7B & 40B side by side")]),
+    ("p_viewer", "/viewer?chr=19&start=44880000&end=44950000", [("#landscape","Interactive Δ landscape (APOE locus): position vs Evo2-40B Δ, red→green colour scale")]),
     ("p_faceted", "/evo2/variants?_facet=Func_ensGene", [(".facet-results","Facet by functional region, with live counts")]),
     ("p_about", "/about", [(".evo2-doc table","2 models × 3 strand strategies → 18 model-score columns")]),
 ]
@@ -20,6 +20,10 @@ with sync_playwright() as p:
     b=p.chromium.launch(); pg=b.new_page(viewport={"width":1180,"height":900}, device_scale_factor=SCALE)
     for name, path, targets in PANELS:
         pg.goto(BASE+path, wait_until="networkidle", timeout=30000); pg.wait_for_timeout(700)
+        if name=="p_viewer":
+            try: pg.wait_for_selector("#landscape canvas, #landscape svg", timeout=15000)
+            except Exception: pass
+            pg.wait_for_timeout(1800)
         full=f"{OUT}/{name}_full.png"; pg.screenshot(path=full, full_page=True)
         boxes=[]
         for sel,label in targets:

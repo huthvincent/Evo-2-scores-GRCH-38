@@ -79,7 +79,7 @@ vlim=max(abs(np.percentile(bd,2)),abs(np.percentile(bd,98)),1); norm=TwoSlopeNor
 sc=ax.scatter(bx,bd,c=bd,cmap=EVO,norm=norm,s=22,edgecolors="#334155",linewidths=0.25)
 ax.axhline(0,color=MUTED,lw=0.8,ls="--")
 ax.set_xlabel(f"{gname} locus position (chr{chrom}, Mb)"); ax.set_ylabel("Evo2-40B Δ score")
-ax.set_title(f"Variant landscape across {gname} (n={len(b)}, common variants)")
+ax.set_title(f"Variant landscape across the {gname} locus (n={len(b)}, common)")
 cb=plt.colorbar(sc,ax=ax,fraction=0.046,pad=0.03); cb.set_label("Δ  (disfavored ↔ tolerated)",fontsize=8)
 ax.grid(color=GRID,lw=0.6); ax.set_axisbelow(True); letter(ax,"d")
 
