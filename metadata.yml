@@ -1,0 +1,131 @@
+title: Evo2 Variant Effect Database
+description_html: |-
+  <p><strong>Evo2-DB</strong> provides genome-scale variant-effect predictions from the
+  <a href="https://github.com/ArcInstitute/evo2">Evo2</a> DNA foundation model
+  (7B and 40B parameters) for <strong>6,475,578 common autosomal human variants</strong>
+  (GRCh38, chr1&ndash;22, gnomAD NFE MAF&nbsp;&ge;&nbsp;5%). For each variant we report the
+  model's <em>delta log-likelihood</em> score (ALT&nbsp;&minus;&nbsp;REF) under three
+  reverse-complement strategies (noRC / avgRC / weightRC), alongside Ensembl gene &amp;
+  exonic-function annotation, RepeatMasker repeat class, ENCODE cCRE category,
+  phastCons/phyloP100way conservation, and gnomAD allele frequency / MAF tier.</p>
+  <p><em>For research use only &mdash; not validated for clinical interpretation.</em></p>
+license: Apache License 2.0
+license_url: https://www.apache.org/licenses/LICENSE-2.0
+source: HuggingFace · huthvincent/Evo2-Variant-DB
+source_url: https://huggingface.co/datasets/huthvincent/Evo2-Variant-DB
+extra_css_urls:
+  - /static/custom.css
+databases:
+  evo2:
+    tables:
+      variants:
+        label_column: rsid
+        fts_table: variants_fts
+        fts_pk: rowid
+        sort_desc: evo40b_noRC_delta_score
+        facets:
+          - Func_ensGene
+          - category
+          - MAF_tier
+          - ExonicFunc_ensGene
+          - repClass
+        sortable_columns:
+          - variant_id
+          - CHR
+          - BP
+          - rsid
+          - Alt_Freq
+          - MAF
+          - evo7b_noRC_delta_score
+          - evo40b_noRC_delta_score
+          - phastCons100way
+          - phyloP100way
+        description_html: |-
+          One row per variant. <code>variant_id</code> = CHR:BP:Ref:Alt (GRCh38).
+          Free-text search box covers rsID, gene symbol and amino-acid change.
+        columns:
+          variant_id: "Unique key CHR:BP:Ref:Alt (GRCh38)"
+          CHR: "Chromosome (1-22; autosomes only)"
+          BP: "Genomic base-pair position (GRCh38)"
+          rsid: "dbSNP Reference SNP ID"
+          Ref: "Reference allele (GRCh38)"
+          Alt: "Alternate (non-reference) allele"
+          Alt_Freq: "Alternate-allele frequency, gnomAD NFE"
+          MAF: "Minor allele frequency"
+          MAF_tier: "MAF quintile bin (Q1 lowest - Q5 highest)"
+          Callrate_filter: "Genotyping call-rate QC flag (all 'passed')"
+          repName: "RepeatMasker repeat name"
+          repClass: "RepeatMasker repeat class (LINE/SINE/LTR/DNA...)"
+          repFamily: "RepeatMasker repeat family"
+          evo7b_noRC_score_alt: "Evo2-7B log-likelihood, ALT sequence (no reverse-complement)"
+          evo7b_noRC_score_ref: "Evo2-7B log-likelihood, REF sequence (no reverse-complement)"
+          evo7b_noRC_delta_score: "Evo2-7B delta (ALT - REF); more negative = more disruptive"
+          evo7b_avgRC_score_alt: "Evo2-7B log-likelihood, ALT (avg of forward + reverse-complement)"
+          evo7b_avgRC_score_ref: "Evo2-7B log-likelihood, REF (avg of forward + reverse-complement)"
+          evo7b_avgRC_delta_score: "Evo2-7B delta (ALT - REF), avgRC strategy"
+          evo7b_weightRC_score_alt: "Evo2-7B log-likelihood, ALT (length-weighted RC)"
+          evo7b_weightRC_score_ref: "Evo2-7B log-likelihood, REF (length-weighted RC)"
+          evo7b_weightRC_delta_score: "Evo2-7B delta (ALT - REF), weightRC strategy"
+          evo40b_noRC_score_alt: "Evo2-40B log-likelihood, ALT sequence (no reverse-complement)"
+          evo40b_noRC_score_ref: "Evo2-40B log-likelihood, REF sequence (no reverse-complement)"
+          evo40b_noRC_delta_score: "Evo2-40B delta (ALT - REF); more negative = more disruptive"
+          evo40b_avgRC_score_alt: "Evo2-40B log-likelihood, ALT (avg of forward + reverse-complement)"
+          evo40b_avgRC_score_ref: "Evo2-40B log-likelihood, REF (avg of forward + reverse-complement)"
+          evo40b_avgRC_delta_score: "Evo2-40B delta (ALT - REF), avgRC strategy"
+          evo40b_weightRC_score_alt: "Evo2-40B log-likelihood, ALT (length-weighted RC)"
+          evo40b_weightRC_score_ref: "Evo2-40B log-likelihood, REF (length-weighted RC)"
+          evo40b_weightRC_delta_score: "Evo2-40B delta (ALT - REF), weightRC strategy"
+          Func_ensGene: "ANNOVAR/Ensembl region class (intergenic, intronic, exonic...)"
+          Gene_ensGene: "Ensembl gene symbol(s) at/near the variant"
+          GeneDetail_ensGene: "Transcript / distance detail (ANNOVAR)"
+          ExonicFunc_ensGene: "Coding consequence (nonsynonymous/synonymous/stopgain...)"
+          AAChange_ensGene: "Amino-acid change & transcript (coding variants only)"
+          phastCons100way: "phastCons conservation, 100-way vertebrate (0-1)"
+          phyloP100way: "phyloP conservation, 100-way vertebrate (signed)"
+          category: "ENCODE cCRE functional category"
+    queries:
+      lookup_by_rsid:
+        title: "Look up a variant by rsID"
+        description: "Exact dbSNP rsID, e.g. rs76735897"
+        sql: |-
+          SELECT variant_id, rsid, CHR, BP, Ref, Alt, Alt_Freq, MAF_tier,
+                 evo7b_noRC_delta_score, evo40b_noRC_delta_score,
+                 Func_ensGene, Gene_ensGene, ExonicFunc_ensGene, AAChange_ensGene,
+                 category, phastCons100way, phyloP100way
+          FROM variants
+          WHERE rsid = :rsid
+      lookup_by_region:
+        title: "Browse a genomic region"
+        description: "Chromosome (1-22) and a base-pair window (GRCh38)"
+        sql: |-
+          SELECT variant_id, rsid, BP, Ref, Alt, Alt_Freq,
+                 evo7b_noRC_delta_score, evo40b_noRC_delta_score,
+                 Func_ensGene, Gene_ensGene, category
+          FROM variants
+          WHERE CHR = :chr AND BP BETWEEN :start AND :end
+          ORDER BY BP
+          LIMIT 1000
+      gene_top_impact:
+        title: "Top predicted-impact variants in a gene"
+        description: "Gene symbol, e.g. BRCA1 - ranked by |Evo2-40B delta|"
+        sql: |-
+          SELECT variant_id, rsid, CHR, BP, Ref, Alt, Alt_Freq,
+                 evo40b_noRC_delta_score, evo7b_noRC_delta_score,
+                 Func_ensGene, ExonicFunc_ensGene, AAChange_ensGene, category
+          FROM variants
+          WHERE Gene_ensGene LIKE '%' || :gene || '%'
+          ORDER BY abs(evo40b_noRC_delta_score) DESC
+          LIMIT 1000
+      high_impact_coding:
+        title: "Strongest-effect protein-coding variants"
+        description: "Nonsynonymous / stopgain / stoploss / startloss, ranked by |Evo2-40B delta|"
+        sql: |-
+          SELECT variant_id, rsid, CHR, BP, Ref, Alt, Gene_ensGene,
+                 ExonicFunc_ensGene, AAChange_ensGene,
+                 evo40b_noRC_delta_score, evo7b_noRC_delta_score,
+                 phastCons100way, phyloP100way
+          FROM variants
+          WHERE ExonicFunc_ensGene IN
+                ('nonsynonymous SNV','stopgain','stoploss','startloss')
+          ORDER BY abs(evo40b_noRC_delta_score) DESC
+          LIMIT 1000

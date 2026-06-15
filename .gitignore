@@ -1,0 +1,19 @@
+# Data — lives on HuggingFace, exceeds GitHub's 100 MB file limit
+evo2.db
+evo2.parquet
+*.gz
+*.tsv
+
+# Python env / caches
+.venv/
+__pycache__/
+*.pyc
+
+# Local runtime logs
+*.log
+
+# macOS
+.DS_Store
+
+# Internal submission strategy — not for the public repo
+NAR_inquiry.md
