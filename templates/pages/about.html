@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}About & feature scheme — Evo2 Variant Effect Database{% endblock %}
+
+{% block body_class %}evo2-doc-body{% endblock %}
+
+{% block content %}
+<div class="evo2-wrap evo2-doc">
+  <a class="evo2-back" href="/">&larr; Back to search</a>
+
+  <h1>About &amp; feature scheme</h1>
+  <p>The <strong>Evo2 Variant Effect Database</strong> provides zero-shot variant-effect scores from the
+  <a href="https://github.com/ArcInstitute/evo2">Evo2</a> DNA foundation model for
+  <strong>6,475,578 common autosomal human variants</strong> (GRCh38, chromosomes 1&ndash;22;
+  gnomAD NFE minor-allele-frequency &ge;&nbsp;5%, call-rate QC passed). It is overwhelmingly noncoding:
+  ~2.61M intergenic, ~2.18M intronic, ~1.12M ncRNA-intronic, and only ~37.9k protein-coding variants.
+  <strong>Research use only &mdash; not validated for clinical interpretation.</strong></p>
+
+  <h2>How a variant is scored</h2>
+  <p>Evo2 is an autoregressive DNA language model. For each variant we give the model the
+  <strong>reference</strong> and the <strong>alternate</strong> sequence and take the difference of their
+  sequence log-likelihoods:</p>
+  <p><code>delta = log&nbsp;P(ALT) &minus; log&nbsp;P(REF)</code></p>
+  <p>A <strong>more negative</strong> delta means the alternate allele is more surprising to the model
+  (predicted more disruptive); a delta <strong>near zero</strong> means it looks tolerated. Delta is a
+  relative model score on the log-likelihood scale &mdash; <strong>not</strong> a calibrated probability
+  and <strong>not</strong> a pathogenicity call.</p>
+
+  <h2>Two models &times; three strand strategies</h2>
+  <p>Every variant carries scores from <strong>both</strong> Evo2 model sizes, each computed under
+  <strong>three</strong> strategies for handling DNA's two strands &mdash; 6 score sets in total. Each set
+  has three columns: the ALT log-likelihood, the REF log-likelihood, and their delta.</p>
+  <table>
+    <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td>Evo2-7B</td><td>The 7-billion-parameter Evo2 model.</td></tr>
+      <tr><td>Evo2-40B</td><td>The 40-billion-parameter Evo2 model &mdash; larger, generally the stronger signal.</td></tr>
+      <tr><td>RC</td><td><strong>Reverse complement.</strong> DNA is double-stranded; the same variant can be read on the forward strand or on the complementary (reverse-complement) strand.</td></tr>
+      <tr><td>noRC</td><td>Scored on the forward strand only (no reverse complement).</td></tr>
+      <tr><td>avgRC</td><td>The average of the forward-strand and reverse-complement scores.</td></tr>
+      <tr><td>weightRC</td><td>A length-weighted combination of the forward and reverse-complement scores.</td></tr>
+    </tbody>
+  </table>
+  <p>This produces the 18 model-score columns below (6 sets &times; alt / ref / delta):</p>
+  <table>
+    <thead><tr><th>Model</th><th>noRC</th><th>avgRC</th><th>weightRC</th></tr></thead>
+    <tbody>
+      <tr><td>Evo2-7B</td><td>evo7b_noRC_{alt,ref,delta}</td><td>evo7b_avgRC_{alt,ref,delta}</td><td>evo7b_weightRC_{alt,ref,delta}</td></tr>
+      <tr><td>Evo2-40B</td><td>evo40b_noRC_{alt,ref,delta}</td><td>evo40b_avgRC_{alt,ref,delta}</td><td>evo40b_weightRC_{alt,ref,delta}</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Feature scheme &mdash; all 38 columns</h2>
+
+  <h3>Identity &amp; position</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>variant_id</td><td>text</td><td>Unique key, CHR:BP:Ref:Alt (GRCh38)</td></tr>
+      <tr><td>CHR</td><td>text</td><td>Chromosome (1&ndash;22; autosomes only)</td></tr>
+      <tr><td>BP</td><td>int</td><td>Base-pair position (GRCh38)</td></tr>
+      <tr><td>rsid</td><td>text</td><td>dbSNP Reference SNP ID</td></tr>
+      <tr><td>Ref</td><td>text</td><td>Reference allele</td></tr>
+      <tr><td>Alt</td><td>text</td><td>Alternate allele</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Allele frequency &amp; QC</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Alt_Freq</td><td>real</td><td>Alternate-allele frequency (gnomAD NFE)</td></tr>
+      <tr><td>MAF</td><td>real</td><td>Minor allele frequency</td></tr>
+      <tr><td>MAF_tier</td><td>text</td><td>MAF quintile (Q1 lowest &hellip; Q5 highest)</td></tr>
+      <tr><td>Callrate_filter</td><td>text</td><td>Genotyping call-rate QC flag (all &ldquo;passed&rdquo;)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Evo2 model scores (18 columns)</h3>
+  <table>
+    <thead><tr><th>Column pattern</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>evo{7b,40b}_{noRC,avgRC,weightRC}_score_alt</td><td>real</td><td>Log-likelihood of the ALT sequence</td></tr>
+      <tr><td>evo{7b,40b}_{noRC,avgRC,weightRC}_score_ref</td><td>real</td><td>Log-likelihood of the REF sequence</td></tr>
+      <tr><td>evo{7b,40b}_{noRC,avgRC,weightRC}_delta_score</td><td>real</td><td>delta = ALT &minus; REF; more negative = more disruptive</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Gene &amp; functional annotation (ANNOVAR / Ensembl)</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Func_ensGene</td><td>text</td><td>Region class (intergenic, intronic, exonic, UTR&hellip;)</td></tr>
+      <tr><td>Gene_ensGene</td><td>text</td><td>Ensembl gene symbol(s)</td></tr>
+      <tr><td>GeneDetail_ensGene</td><td>text</td><td>Transcript / distance detail</td></tr>
+      <tr><td>ExonicFunc_ensGene</td><td>text</td><td>Coding consequence (nonsynonymous / synonymous / stopgain&hellip;)</td></tr>
+      <tr><td>AAChange_ensGene</td><td>text</td><td>Amino-acid change &amp; transcript (coding variants)</td></tr>
+      <tr><td>category</td><td>text</td><td>ENCODE cCRE functional category</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Conservation</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>phastCons100way</td><td>real</td><td>phastCons conservation, 100-way vertebrate (0&ndash;1)</td></tr>
+      <tr><td>phyloP100way</td><td>real</td><td>phyloP conservation, 100-way vertebrate (signed)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Repeats</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>repName</td><td>text</td><td>RepeatMasker repeat name</td></tr>
+      <tr><td>repClass</td><td>text</td><td>RepeatMasker repeat class (LINE/SINE/LTR/DNA&hellip;)</td></tr>
+      <tr><td>repFamily</td><td>text</td><td>RepeatMasker repeat family</td></tr>
+    </tbody>
+  </table>
+  <p style="color:var(--c-muted);font-size:.88rem">Missing values are stored as NULL (source tokens <code>.</code> / <code>NA</code>).</p>
+
+  <h2>Quick start</h2>
+  <ul>
+    <li>Search by <a href="/evo2/lookup_by_rsid?rsid=rs76735897">rsID</a>, <a href="/evo2/gene_top_impact?gene=BRCA1">gene</a>, or <a href="/evo2/lookup_by_region?chr=1&amp;start=60000&amp;end=70000">region</a> from the home page.</li>
+    <li>Filter and facet the whole table at <a href="/evo2/variants">/evo2/variants</a>.</li>
+    <li>Run SQL at <a href="/evo2">/evo2</a>; add <code>.json</code> to any page for the API.</li>
+  </ul>
+
+  <h2>Cite</h2>
+  <p>Brixi et&nbsp;al., &ldquo;Genome modeling and design across all domains of life with Evo&nbsp;2&rdquo;
+  (Arc Institute, 2025); and the Evo2 Variant Effect Database (GRCh38), 2026.
+  License: <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache-2.0</a>.</p>
+
+  <a class="evo2-back" href="/">&larr; Back to search</a>
+</div>
+{% endblock %}

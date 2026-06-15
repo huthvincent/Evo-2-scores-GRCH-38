@@ -22,4 +22,6 @@ exec datasette -i "$DB" -m metadata.yml \
   --setting default_facet_size 20 \
   --setting suggest_facets off \
   --setting allow_download off \
+  --setting allow_csv_stream off \
+  --setting max_csv_mb 5 \
   --cors

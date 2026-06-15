@@ -11,8 +11,6 @@ description_html: |-
   <p><em>For research use only &mdash; not validated for clinical interpretation.</em></p>
 license: Apache License 2.0
 license_url: https://www.apache.org/licenses/LICENSE-2.0
-source: HuggingFace · huthvincent/Evo2-Variant-DB
-source_url: https://huggingface.co/datasets/huthvincent/Evo2-Variant-DB
 extra_css_urls:
   - /static/custom.css
 databases:

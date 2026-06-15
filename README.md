@@ -6,13 +6,21 @@ for the NAR Database Issue pre-submission inquiry.
 
 ## Live resource
 
-- **Database (web app):** https://huthvincent-evo2-database.hf.space
+- **Database (web app):** https://huthvincent-evo2-database.hf.space — free, no login; search / browse / SQL / JSON API
 - **HuggingFace Space:** https://huggingface.co/spaces/huthvincent/evo2-database
-- **Data (Parquet + SQLite — download / HF Viewer):** https://huggingface.co/datasets/huthvincent/Evo2-Variant-DB
 
-> The large data files (`evo2.db` ≈ 3.4 GB, `evo2.parquet` ≈ 796 MB) are **not** in this
-> repo — they live on the HuggingFace dataset above. This repo holds the code, config, and
-> front-end; rebuild the database locally with `build_db.py`.
+> The underlying data (`evo2.db` ≈ 3.4 GB, `evo2.parquet` ≈ 796 MB) lives on a **private**
+> HuggingFace dataset and is **not** redistributed here; bulk download is disabled on the web app
+> by design (data access on request). This repo holds the code, config, and front-end. Rebuild the
+> database locally from the source `.gz` with `build_db.py`. The Space fetches the private DB at
+> build time using an `HF_TOKEN` Space secret.
+
+## Figures (NAR paper)
+
+`make_fig1_architecture.py` (pipeline diagram), `screenshot.py` + `callout_capture.py` +
+`make_fig2_interface.py` (annotated interface panels), `extract_case_data.py` +
+`make_fig3_casestudy.py` (data/case study), `make_graphical_abstract.py`. Outputs (PDF + PNG) are
+written to `../figures/`.
 
 ## What's here
 
