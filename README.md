@@ -1,3 +1,10 @@
+> [!IMPORTANT]
+> **This repository is archived and no longer maintained.**
+> Development moved to **[huthvincent/DNA-LLM-VED](https://github.com/huthvincent/DNA-LLM-VED)**,
+> which contains the current Evo2VED pipeline, statistical analyses and web application.
+
+---
+
 # Evo2 Variant Effect Database — build & deploy kit
 
 Turns the Evo2 inference TSV into a free, public, queryable web database
